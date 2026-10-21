@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="color-scheme" content="dark">
+<title>Bartek guitarist master level maderfucker Jones</title>
+<style>
+  :root{
+    --bg:#0A0908; --panel:#151210; --panel2:#1E1916; --line:rgba(255,255,255,.10);
+    --ink:#F6EFE6; --dim:#9A8E82;
+    --amber:#FFB020; --crimson:#FF3B5C; --teal:#2DD4BF; --violet:#9B6BFF; --lime:#B8E04A;
+    --r:18px;
+    --safeT:env(safe-area-inset-top,0px); --safeB:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(70% 45% at 15% 0%, rgba(255,176,32,.16), transparent 62%),
+      radial-gradient(60% 40% at 90% 6%, rgba(255,59,92,.13), transparent 62%),
+      radial-gradient(80% 55% at 50% 108%, rgba(155,107,255,.14), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font:400 16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+    min-height:100dvh;-webkit-font-smoothing:antialiased;
+    padding:calc(14px + var(--safeT)) 16px calc(46px + var(--safeB));
+    overscroll-behavior-y:contain;
+  }
+  .wrap{max-width:780px;margin:0 auto}
+  button{font-family:inherit}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  /* ---- header ---- */
+  .brand{margin:0;font-weight:800;letter-spacing:-.5px;line-height:.95;
+    font-size:clamp(25px,7.4vw,40px);text-transform:uppercase}
+  .brand .b1{background:linear-gradient(95deg,var(--amber),var(--crimson) 60%,var(--violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand .b2{display:block;font-size:.46em;letter-spacing:.14em;color:var(--dim);font-weight:600;margin-top:5px}
+  .tagline{font-size:11px;letter-spacing:.17em;text-transform:uppercase;color:var(--dim);margin:8px 0 0}
+
+  /* ---- tabs ---- */
+  .tabs{display:flex;gap:7px;overflow-x:auto;padding:15px 0 5px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{font-size:13px;font-weight:600;border:1px solid var(--line);background:transparent;color:var(--dim);
+    padding:9px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:.12s}
+  .tab.on{color:#140F0A;background:linear-gradient(95deg,var(--amber),var(--lime));border-color:transparent}
+  .tab:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+  /* ---- cards ---- */
+  .view{display:none} .view.on{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .card{border:1px solid var(--line);border-radius:22px;margin-top:16px;padding:17px 16px 19px;
+    background:linear-gradient(180deg,var(--panel),var(--panel2))}
+  .card h2{margin:0 0 7px;font-size:19px;font-weight:700;letter-spacing:-.2px}
+  .card h3{margin:16px 0 6px;font-size:14px;font-weight:700;color:var(--amber);
+    text-transform:uppercase;letter-spacing:.09em}
+  .muted{font-size:13.5px;color:var(--dim);margin:0}
+  .muted b{color:var(--ink);font-weight:600}
+  .hint{font-size:12px;line-height:1.5;color:var(--ink);border:1px solid rgba(255,176,32,.3);
+    background:rgba(255,176,32,.07);border-radius:14px;padding:10px 12px;margin:12px 0 0}
+  .hint b{color:var(--amber)}
+
+  /* ---- chips / buttons ---- */
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+  .chip{font-size:12.5px;font-weight:600;border:1px solid var(--line);background:transparent;color:var(--dim);
+    padding:8px 12px;border-radius:999px;cursor:pointer;transition:.1s;white-space:nowrap}
+  .chip:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .chip.on{color:#140F0A;background:linear-gradient(95deg,var(--teal),var(--lime));border-color:transparent}
+  .chip.sm{font-size:11.5px;padding:6px 10px}
+  .go{font-size:17px;font-weight:800;border:none;cursor:pointer;color:#140F0A;
+    background:linear-gradient(95deg,var(--amber),var(--crimson));
+    padding:13px 24px;border-radius:15px;box-shadow:0 10px 30px -12px var(--crimson)}
+  .go:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+  .go.playing{background:linear-gradient(95deg,var(--violet),var(--teal))}
+  .ghost{font-size:12.5px;font-weight:600;border:1px solid var(--line);background:transparent;color:var(--dim);
+    padding:9px 13px;border-radius:12px;cursor:pointer}
+  .ghost.on{border-color:var(--teal);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(45,212,191,.35)}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+  .spread{display:flex;justify-content:space-between;align-items:center;gap:10px}
+
+  /* ---- sliders ---- */
+  .sl{display:flex;align-items:center;gap:11px;margin:11px 0}
+  .sl .lbl{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);min-width:62px}
+  .sl input[type=range]{flex:1 1 120px;accent-color:var(--amber);min-width:90px}
+  .sl .val{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--amber);min-width:62px;text-align:right}
+
+  .big{font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:44px;color:var(--amber);
+    line-height:1;text-align:center;letter-spacing:-1px}
+  .stat{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--dim);text-align:center;margin:6px 0 0}
+
+  /* ---- level path ---- */
+  .lvl{border:1px solid var(--line);border-radius:17px;padding:13px 14px;margin-top:11px;
+    background:rgba(255,255,255,.025);cursor:pointer;transition:.12s;display:block;width:100%;text-align:left}
+  .lvl:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+  .lvl.on{border-color:var(--amber);background:rgba(255,176,32,.09)}
+  .lvl.done{border-color:rgba(184,224,74,.45)}
+  .lvl .ln{display:flex;align-items:center;gap:10px}
+  .lvl .num{font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;color:#140F0A;
+    background:var(--dim);border-radius:7px;padding:3px 7px;flex:0 0 auto}
+  .lvl.on .num{background:var(--amber)} .lvl.done .num{background:var(--lime)}
+  .lvl .nm{font-weight:700;font-size:15px}
+  .lvl .sub{font-size:12.5px;color:var(--dim);margin:7px 0 0;line-height:1.45}
+  .lvl .tick{margin-left:auto;font-size:15px;color:var(--lime)}
+  .skills{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .skill{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--dim)}
+  .bar{height:7px;border-radius:5px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:12px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--amber),var(--lime));border-radius:5px;transition:.3s}
+
+  /* ---- tuner ---- */
+  .tnote{font-weight:800;font-size:60px;text-align:center;line-height:1;margin:14px 0 2px;letter-spacing:-2px}
+  .tnote small{font-family:ui-monospace,Menlo,monospace;font-size:15px;color:var(--dim);font-weight:400;letter-spacing:0}
+  .cents{position:relative;height:16px;border-radius:9px;background:rgba(255,255,255,.07);margin:12px 0 7px;overflow:hidden}
+  .cents .mid{position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,.4)}
+  .cents .ndl{position:absolute;top:0;bottom:0;width:11px;border-radius:7px;left:50%;
+    transform:translateX(-50%);background:var(--crimson);opacity:0;transition:left .07s,background .12s}
+  .cents.live .ndl{opacity:1}
+  .cents.ok .ndl{background:linear-gradient(180deg,var(--lime),var(--teal));box-shadow:0 0 18px var(--lime)}
+  .strings6{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+  .st6{font-family:ui-monospace,Menlo,monospace;font-size:13px;font-weight:700;border:1px solid var(--line);
+    border-radius:11px;padding:9px 0;width:46px;text-align:center;color:var(--dim);background:transparent;cursor:pointer}
+  .st6.near{border-color:var(--amber);color:var(--amber)}
+  .st6.ok{border-color:var(--lime);color:var(--lime);background:rgba(184,224,74,.1)}
+
+  /* ---- fretboard + chord diagram ---- */
+  .fbwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px -4px 0;padding:0 4px 6px}
+  .fbwrap svg{display:block}
+  .cdwrap{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:14px}
+  .cd{border:1px solid var(--line);border-radius:15px;padding:9px 8px 7px;background:rgba(255,255,255,.025);
+    cursor:pointer;transition:.12s;width:104px}
+  .cd.on{border-color:var(--amber);background:rgba(255,176,32,.09)}
+  .cd .cdn{text-align:center;font-weight:700;font-size:14px;margin-bottom:5px}
+  .cd svg{display:block;margin:0 auto}
+
+  /* ---- rhythm grid ---- */
+  .grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0 6px}
+  .cell{width:42px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);
+    padding:8px 3px 6px;text-align:center;transition:.07s;flex:0 0 auto}
+  .cell .a{font-size:17px;font-weight:700;display:block;color:var(--dim);line-height:1.1}
+  .cell .n{font-family:ui-monospace,Menlo,monospace;font-size:9px;color:rgba(255,255,255,.3);display:block;margin-top:2px}
+  .cell[data-a="D"]{border-color:rgba(255,176,32,.45)} .cell[data-a="D"] .a{color:var(--amber)}
+  .cell[data-a="U"]{border-color:rgba(155,107,255,.45)} .cell[data-a="U"] .a{color:var(--violet)}
+  .cell[data-a="X"]{border-color:rgba(255,59,92,.45)} .cell[data-a="X"] .a{color:var(--crimson)}
+  .cell.beat{border-bottom:3px solid rgba(255,176,32,.5)}
+  .cell.active{transform:translateY(-3px) scale(1.07);background:rgba(255,255,255,.1);box-shadow:0 7px 22px -9px #fff}
+  .dots{display:flex;gap:9px;justify-content:center;margin:4px 0 2px}
+  .dot{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.13);transition:.06s}
+  .dot.lit{background:var(--amber);box-shadow:0 0 15px var(--amber);transform:scale(1.25)}
+  .legend{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;font-size:11px;color:var(--dim);margin-top:4px}
+
+  /* ---- exercises ---- */
+  .ex{border:1px solid var(--line);border-radius:15px;padding:12px 13px;margin-top:10px;background:rgba(255,255,255,.025)}
+  .ex .exh{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .ex .exn{font-weight:700;font-size:14.5px}
+  .ex .tgt{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--dim);margin-left:auto}
+  .ex .exd{font-size:12.5px;color:var(--dim);margin:7px 0 0;line-height:1.45}
+  .tabx{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.45;
+    background:rgba(0,0,0,.4);border:1px solid var(--line);border-radius:11px;padding:10px;margin-top:9px;
+    overflow-x:auto;white-space:pre;color:var(--teal)}
+  .pb{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--lime)}
+
+  /* ---- ear ---- */
+  .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:9px;margin-top:14px}
+  .opt{font-size:13.5px;font-weight:600;border:1px solid var(--line);background:rgba(255,255,255,.03);
+    color:var(--ink);padding:14px 8px;border-radius:14px;cursor:pointer;transition:.1s}
+  .opt.good{border-color:var(--lime);background:rgba(184,224,74,.15)}
+  .opt.bad{border-color:var(--crimson);background:rgba(255,59,92,.15)}
+
+  .toast{position:fixed;left:50%;bottom:calc(22px + var(--safeB));transform:translateX(-50%) translateY(14px);
+    background:#2A2420;border:1px solid var(--line);border-radius:13px;padding:11px 16px;font-size:13.5px;
+    opacity:0;pointer-events:none;transition:.2s;z-index:60;max-width:88vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .foot{font-size:11.5px;color:var(--dim);text-align:center;margin:26px 0 0;line-height:1.6}
+
+  @media (prefers-reduced-motion: reduce){
+    .view,.cell,.chip,.lvl{animation:none;transition-duration:.001s}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1 class="brand"><span class="b1">Bartek Jones</span>
+      <span class="b2">guitarist · master level · maderfucker</span></h1>
+    <p class="tagline">od zera do wirtuoza</p>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab on" data-view="path">Ścieżka</button>
+    <button class="tab" data-view="tuner">Stroik</button>
+    <button class="tab" data-view="chords">Akordy</button>
+    <button class="tab" data-view="rhythm">Rytm</button>
+    <button class="tab" data-view="fret">Gryf</button>
+    <button class="tab" data-view="tech">Technika</button>
+    <button class="tab" data-view="ear">Słuch</button>
+  </nav>
+
+  <!-- ===================== ŚCIEŻKA ===================== -->
+  <section class="view on" id="v-path">
+    <div class="card">
+      <h2>Siedem poziomów</h2>
+      <p class="muted">Od pierwszego dźwięku do sweep pickingu. Każdy poziom ma <b>konkretny próg wyjścia</b> — dopóki go nie zrobisz, następny będzie za trudny. Kliknij poziom, żeby zobaczyć plan.</p>
+      <div class="bar"><i id="path-bar" style="width:0%"></i></div>
+      <p class="stat" id="path-stat">0 z 7 poziomów zaliczonych</p>
+      <div id="levels"></div>
+      <p class="hint"><b>Jak ćwiczyć:</b> 20 minut dziennie bije 3 godziny w weekend. Zawsze z metronomem i zawsze wolniej niż umiesz — tempo przychodzi samo, czystość nie.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STROIK ===================== -->
+  <section class="view" id="v-tuner">
+    <div class="card">
+      <h2>Stroik</h2>
+      <p class="muted">Zagraj pustą strunę — rozpoznam ją sam i pokażę, w którą stronę kręcić.</p>
+      <div class="chips" id="tunings"></div>
+      <button class="ghost" id="mic-btn">Włącz mikrofon</button>
+      <p class="muted" id="mic-stat" style="margin-top:8px;font-size:11.5px">Do strojenia potrzebny jest mikrofon.</p>
+      <div class="tnote" id="t-note">—</div>
+      <div class="cents" id="t-bar"><div class="mid"></div><div class="ndl" id="t-ndl"></div></div>
+      <p class="stat" id="t-cents">włącz mikrofon i zagraj strunę</p>
+      <div class="strings6" id="t-strings"></div>
+      <div class="row" style="justify-content:center">
+        <button class="ghost" id="t-ref">♪ Zagraj wzorzec</button>
+      </div>
+      <p class="hint">Strój zawsze <b>w górę</b> do nuty. Jeśli przeciągnąłeś — zjedź niżej i podejdź jeszcze raz od dołu, inaczej struna „ucieknie” po kilku minutach grania.</p>
+    </div>
+  </section>
+
+  <!-- ===================== AKORDY ===================== -->
+  <section class="view" id="v-chords">
+    <div class="card">
+      <h2>Akordy</h2>
+      <p class="muted">Diagram czyta się jak gryf postawiony pionowo: gruba struna E po lewej. <b>×</b> = nie gramy, <b>○</b> = pusta struna, cyfra = palec.</p>
+      <div class="chips" id="chord-groups"></div>
+      <div class="cdwrap" id="chord-list"></div>
+      <div class="row" style="justify-content:center">
+        <button class="go" id="ch-play">♪ Zagraj</button>
+        <button class="ghost" id="ch-arp">Arpeggio</button>
+      </div>
+      <p class="stat" id="ch-info"></p>
+    </div>
+    <div class="card">
+      <h2>Zmiany akordów na czas</h2>
+      <p class="muted">Najtrudniejsze w graniu nie są akordy, tylko <b>przejścia</b>. Wybierz dwa, ustaw tempo i przekładaj palce równo z metronomem.</p>
+      <div class="row">
+        <select id="chg-a" class="ghost"></select>
+        <span style="color:var(--dim)">→</span>
+        <select id="chg-b" class="ghost"></select>
+      </div>
+      <div class="sl">
+        <span class="lbl">Tempo</span>
+        <input type="range" id="chg-bpm" min="40" max="140" step="2" value="60">
+        <span class="val"><span id="chg-bpmv">60</span> BPM</span>
+      </div>
+      <div class="row" style="justify-content:center">
+        <button class="go" id="chg-go">► Start</button>
+      </div>
+      <div class="big" id="chg-now" style="margin-top:14px">—</div>
+      <p class="stat" id="chg-cnt">zmiana co 2 takty</p>
+    </div>
+  </section>
+
+  <!-- ===================== RYTM ===================== -->
+  <section class="view" id="v-rhythm">
+    <div class="card">
+      <h2>Bicia</h2>
+      <p class="muted">Ręka ma się wahać <b>bez przerwy</b>, nawet w pauzach — po prostu mija struny. To jedyny sposób, żeby rytm był równy.</p>
+      <div class="chips" id="strum-list"></div>
+      <p class="muted" id="strum-tip" style="margin-top:4px"></p>
+      <div class="dots" id="r-dots"></div>
+      <div class="grid" id="r-grid"></div>
+      <div class="legend">
+        <span style="color:var(--amber)">↓ dół</span>
+        <span style="color:var(--violet)">↑ góra</span>
+        <span style="color:var(--crimson)">× głuszenie</span>
+        <span>· pauza (ręka dalej idzie)</span>
+      </div>
+      <div class="sl">
+        <span class="lbl">Tempo</span>
+        <input type="range" id="r-bpm" min="40" max="200" step="2" value="72">
+        <span class="val"><span id="r-bpmv">72</span> BPM</span>
+      </div>
+      <div class="row">
+        <button class="go" id="r-go">► Graj</button>
+        <button class="ghost on" id="r-metro" aria-pressed="true">Metronom</button>
+        <button class="ghost on" id="r-chord" aria-pressed="true">Akord</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Metronom</h2>
+      <p class="muted">Z podziałem i automatycznym przyspieszaniem — ustaw i ćwicz, sam podkręci tempo, kiedy wytrzymasz.</p>
+      <div class="big" id="m-bpm-big">80</div>
+      <p class="stat" id="m-state">zatrzymany</p>
+      <div class="dots" id="m-dots"></div>
+      <div class="sl">
+        <span class="lbl">Tempo</span>
+        <input type="range" id="m-bpm" min="40" max="260" step="1" value="80">
+        <span class="val"><span id="m-bpmv">80</span> BPM</span>
+      </div>
+      <div class="sl">
+        <span class="lbl">Metrum</span>
+        <input type="range" id="m-beats" min="2" max="7" step="1" value="4">
+        <span class="val"><span id="m-beatsv">4</span>/4</span>
+      </div>
+      <div class="chips" id="m-subs"></div>
+      <div class="row">
+        <button class="go" id="m-go">► Start</button>
+        <button class="ghost" id="m-auto" aria-pressed="false">Auto +2 BPM</button>
+      </div>
+      <p class="hint" id="m-autoinfo" hidden>Co <b>4 takty</b> tempo rośnie o 2 BPM. Gdy zaczniesz gubić — zatrzymaj i zapisz wynik, to Twój aktualny sufit.</p>
+    </div>
+  </section>
+
+  <!-- ===================== GRYF ===================== -->
+  <section class="view" id="v-fret">
+    <div class="card">
+      <h2>Gryf</h2>
+      <p class="muted">Skale na całym gryfie. <b>Pomarańczowe</b> kropki to prymy — to one decydują, w jakiej jesteś tonacji.</p>
+      <div class="row">
+        <select id="f-root" class="ghost"></select>
+        <select id="f-scale" class="ghost"></select>
+      </div>
+      <div class="chips" id="f-pos"></div>
+      <div class="fbwrap" id="f-board"></div>
+      <p class="stat" id="f-info"></p>
+      <div class="row">
+        <button class="go" id="f-play">♪ Zagraj skalę</button>
+        <button class="ghost" id="f-names" aria-pressed="false">Nazwy nut</button>
+      </div>
+      <p class="hint" id="f-tip"></p>
+    </div>
+  </section>
+
+  <!-- ===================== TECHNIKA ===================== -->
+  <section class="view" id="v-tech">
+    <div class="card">
+      <h2>Technika</h2>
+      <p class="muted">Każde ćwiczenie ma <b>tempo docelowe</b>. Graj je czysto 3 razy z rzędu — dopiero wtedy podkręcaj.</p>
+      <div class="chips" id="tech-lv"></div>
+      <div id="tech-list"></div>
+      <p class="hint"><b>Zasada metronomu:</b> jeśli nie trafiasz w klik, tempo jest za wysokie — nie Twoje palce są za wolne. Zejdź o 10 BPM i zostań tam tydzień.</p>
+    </div>
+  </section>
+
+  <!-- ===================== SŁUCH ===================== -->
+  <section class="view" id="v-ear">
+    <div class="card">
+      <h2>Słuch</h2>
+      <p class="muted">Rozpoznawanie interwałów i akordów. To różnica między „umiem zagrać” a „słyszę, co grać”.</p>
+      <div class="chips" id="ear-modes"></div>
+      <div class="row" style="justify-content:center">
+        <button class="go" id="ear-play">♪ Zagraj</button>
+        <button class="ghost" id="ear-again">Powtórz</button>
+      </div>
+      <div class="opts" id="ear-opts"></div>
+      <p class="stat" id="ear-score">—</p>
+    </div>
+  </section>
+
+  <p class="foot">Zbudowane w stylu RYTMIKA·TRIP. Wszystkie dźwięki generowane na żywo — aplikacja działa offline.
+    <br><button class="ghost" id="reset" style="margin-top:10px">Wyczyść postępy</button></p>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  "use strict";
+
+  /* ================= STORAGE ================= */
+  var KEY='bartekjones.v1', mem=null;
+  function load(){ try{ var r=localStorage.getItem(KEY); return r?JSON.parse(r):{}; }catch(e){ return mem||{}; } }
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(store)); }catch(e){ mem=store; } }
+  var store=load();
+  if(!store.done) store.done={};      /* poziomy zaliczone */
+  if(!store.pb) store.pb={};          /* rekordy tempa w technice */
+  if(!store.ear) store.ear={ok:0,all:0};
+
+  /* ================= TEORIA ================= */
+  /* nazwy międzynarodowe: B = H w polskim nazewnictwie */
+  var NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  function mf(m){ return 440*Math.pow(2,(m-69)/12); }          /* midi -> Hz */
+  function mname(m){ return NOTES[((m%12)+12)%12]; }
+  var TUNINGS=[
+    {id:'std',  nm:'Standard',    s:[40,45,50,55,59,64], lbl:['E','A','D','G','B','e']},
+    {id:'drop', nm:'Drop D',      s:[38,45,50,55,59,64], lbl:['D','A','D','G','B','e']},
+    {id:'half', nm:'Pół tonu niżej', s:[39,44,49,54,58,63], lbl:['Eb','Ab','Db','Gb','Bb','eb']},
+    {id:'dadgad',nm:'DADGAD',     s:[38,45,50,55,57,62], lbl:['D','A','D','G','A','d']},
+    {id:'openg',nm:'Open G',      s:[38,43,50,55,59,62], lbl:['D','G','D','G','B','d']}
+  ];
+  var tuning=TUNINGS[0];
+
+  /* ================= AUDIO ================= */
+  var AC=window.AudioContext||window.webkitAudioContext;
+  var ctx=null, master=null, body=null, noiseBuf=null;
+  function ensureAudio(){
+    if(ctx){ if(ctx.state==='suspended') ctx.resume(); return; }
+    ctx=new AC();
+    master=ctx.createGain(); master.gain.value=0.9;
+    /* lekkie "pudło" — pasmo gitary akustycznej */
+    body=ctx.createBiquadFilter(); body.type='peaking'; body.frequency.value=220; body.Q.value=1.1; body.gain.value=3;
+    var hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=65;
+    master.connect(body); body.connect(hp); hp.connect(ctx.destination);
+    var len=Math.floor(ctx.sampleRate*0.5);
+    noiseBuf=ctx.createBuffer(1,len,ctx.sampleRate);
+    var d=noiseBuf.getChannelData(0);
+    for(var i=0;i<len;i++) d[i]=Math.random()*2-1;
+  }
+
+  /* --- Karplus-Strong: szarpnięta struna. Bufory cache'owane per nuta. --- */
+  var ksCache={};
+  function ksBuffer(midi){
+    var k='k'+midi;
+    if(ksCache[k]) return ksCache[k];
+    var sr=ctx.sampleRate, f=mf(midi);
+    var dur=Math.min(3.4, 1.7+ (64-midi)*0.045);      /* basy brzmią dłużej */
+    var N=Math.floor(sr*dur);
+    var L=Math.max(2,Math.round(sr/f));
+    var buf=ctx.createBuffer(1,N,sr), out=buf.getChannelData(0);
+    var ring=new Float32Array(L), i;
+    for(i=0;i<L;i++) ring[i]=Math.random()*2-1;
+    /* wygładzenie pobudzenia = mniej brzęku, bliżej palca niż kostki */
+    for(i=1;i<L;i++) ring[i]=(ring[i]+ring[i-1])*0.5;
+    var damp=0.9965 - Math.max(0,(midi-40))*0.00022;   /* wysokie gasną szybciej */
+    var idx=0, peak=0;
+    for(var n=0;n<N;n++){
+      var cur=ring[idx], nxt=ring[(idx+1)%L];
+      out[n]=cur;
+      if(Math.abs(cur)>peak) peak=Math.abs(cur);
+      ring[idx]=(cur+nxt)*0.5*damp;
+      idx=(idx+1)%L;
+    }
+    /* normalizacja + wyciszenie ogona, żeby nie trzaskało na końcu */
+    var g=peak>0?0.85/peak:1, tail=Math.floor(sr*0.12);
+    for(n=0;n<N;n++){
+      var e=1; if(n>N-tail) e=(N-n)/tail;
+      out[n]*=g*e;
+    }
+    ksCache[k]=buf; return buf;
+  }
+  function pluck(midi,t,gain){
+    ensureAudio();
+    if(midi<28||midi>96) return;
+    var s=ctx.createBufferSource(); s.buffer=ksBuffer(midi);
+    var g=ctx.createGain(); g.gain.value=(gain==null?0.55:gain);
+    var lp=ctx.createBiquadFilter(); lp.type='lowpass';
+    lp.frequency.value=2600+Math.max(0,(midi-40))*55; lp.Q.value=0.6;
+    s.connect(lp); lp.connect(g); g.connect(master);
+    s.start(t); s.stop(t+s.buffer.duration+0.02);
+  }
+  /* strum: akord jako 6 szarpnięć rozsuniętych w czasie */
+  function strum(frets,t,dir,gain){
+    ensureAudio();
+    var order=[0,1,2,3,4,5], sp=0.016;
+    if(dir==='U'){ order=[5,4,3,2,1,0]; sp=0.013; }
+    var k=0;
+    for(var j=0;j<6;j++){
+      var si=order[j], fr=frets[si];
+      if(fr<0) continue;
+      pluck(tuning.s[si]+fr, t+k*sp, (gain==null?0.5:gain)*(dir==='U'?0.82:1));
+      k++;
+    }
+  }
+  function mute(t){
+    ensureAudio();
+    var n=ctx.createBufferSource(); n.buffer=noiseBuf;
+    var bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=320; bp.Q.value=1.4;
+    var g=ctx.createGain();
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.3,t+0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.1);
+    n.connect(bp); bp.connect(g); g.connect(master); n.start(t); n.stop(t+0.12);
+  }
+  /* lvl: 1 = "raz" taktu, 0 = zwykła miara, -1 = podział (cichszy i wyżej) */
+  function click(t,lvl){
+    ensureAudio();
+    if(lvl===true) lvl=1; else if(lvl===false||lvl==null) lvl=0;
+    var o=ctx.createOscillator(); o.type='square';
+    o.frequency.value=lvl>0?2000:(lvl<0?2600:1350);
+    var g=ctx.createGain();
+    var peak=lvl>0?0.2:(lvl<0?0.035:0.1);
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(peak,t+0.001);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+(lvl<0?0.018:0.03));
+    o.connect(g); g.connect(master); o.start(t); o.stop(t+0.045);
+  }
+
+  /* ================= UI HELPERS ================= */
+  var toastT=null;
+  function toast(m){
+    var el=document.getElementById('toast');
+    el.textContent=m; el.classList.add('show');
+    clearTimeout(toastT); toastT=setTimeout(function(){ el.classList.remove('show'); },2300);
+  }
+  function el(id){ return document.getElementById(id); }
+  function mk(tag,cls,txt){ var e=document.createElement(tag); if(cls)e.className=cls; if(txt!=null)e.textContent=txt; return e; }
+  function pick(box,on){ Array.prototype.forEach.call(box.children,function(c,i){ c.classList.toggle('on',i===on); }); }
+
+  /* ================= DANE: POZIOMY ================= */
+  var LEVELS=[
+    {nm:'Zero', sub:'Trzymasz gitarę, stroisz ją i wydobywasz czysty dźwięk z każdej struny.',
+     skills:['postawa','stroik','pusta struna','kostka w dół'],
+     goal:'Zagraj wszystkie 6 pustych strun po kolei, czysto, równo z metronomem 60 BPM.'},
+    {nm:'Pierwsze akordy', sub:'Em, Am, D, G, C. Nie brzęczą, wszystkie struny wybrzmiewają.',
+     skills:['Em Am D G C','dociskanie','łuk palców','zmiana w 4 takty'],
+     goal:'Zagraj Em → Am → D → G w pętli, 60 BPM, bez brzęczenia.'},
+    {nm:'Rytm', sub:'Ręka waha się bez przerwy. Ósemki, synkopa, głuszenie.',
+     skills:['↓↑ ósemki','pauza z ruchem','×  głuszenie','4 bicia'],
+     goal:'Zagraj bicie „Pop” i „Ballada” po 2 minuty bez gubienia pulsu, 90 BPM.'},
+    {nm:'Barre i tonacje', sub:'F i Bm przestają być wymówką. CAGED i kapodaster.',
+     skills:['barre F','Bm','CAGED','kapodaster','akordy 7'],
+     goal:'Zagraj F → C → G → Am w pętli, 80 BPM, wszystkie struny słyszalne.'},
+    {nm:'Solo', sub:'Pentatonika w 5 pozycjach, bending, vibrato, hammer-on i pull-off.',
+     skills:['pentatonika ×5','bending ½ i 1','vibrato','H/P','blues'],
+     goal:'Zagraj pentatonikę A-moll we wszystkich 5 pozycjach, 100 BPM ósemkami.'},
+    {nm:'Zaawansowany', sub:'Modi, alternate picking na pełnej prędkości, legato, ekonomia kostki.',
+     skills:['modi','alternate 16tki','legato','economy','string skipping'],
+     goal:'Chromatyka 1-2-3-4 szesnastkami przy 120 BPM, czysto, 3 przebiegi z rzędu.'},
+    {nm:'Wirtuoz', sub:'Sweep, tapping, hybrid picking. Tempo, które widać tylko na nagraniu.',
+     skills:['sweep','tapping','hybrid','arpeggia 5-str','160+ BPM'],
+     goal:'Sweep na 3 strunach przy 120 BPM i chromatyka szesnastkami przy 160 BPM.'}
+  ];
+
+  /* ================= DANE: AKORDY ================= */
+  /* f: progi od struny E (gruba) do e (cienka); -1 = nie gramy, 0 = pusta
+     d: palce (0 = brak), b: [próg, odStruny, doStruny] dla barre */
+  var CHORDS=[
+    {n:'Em', g:0, f:[0,2,2,0,0,0],   d:[0,2,3,0,0,0]},
+    {n:'Am', g:0, f:[-1,0,2,2,1,0],  d:[0,0,2,3,1,0]},
+    {n:'E',  g:0, f:[0,2,2,1,0,0],   d:[0,2,3,1,0,0]},
+    {n:'A',  g:0, f:[-1,0,2,2,2,0],  d:[0,0,1,2,3,0]},
+    {n:'D',  g:0, f:[-1,-1,0,2,3,2], d:[0,0,0,1,3,2]},
+    {n:'G',  g:0, f:[3,2,0,0,0,3],   d:[2,1,0,0,0,3]},
+    {n:'C',  g:0, f:[-1,3,2,0,1,0],  d:[0,3,2,0,1,0]},
+    {n:'Dm', g:0, f:[-1,-1,0,2,3,1], d:[0,0,0,2,3,1]},
+    {n:'A7', g:1, f:[-1,0,2,0,2,0],  d:[0,0,2,0,3,0]},
+    {n:'E7', g:1, f:[0,2,0,1,0,0],   d:[0,2,0,1,0,0]},
+    {n:'D7', g:1, f:[-1,-1,0,2,1,2], d:[0,0,0,2,1,3]},
+    {n:'G7', g:1, f:[3,2,0,0,0,1],   d:[3,2,0,0,0,1]},
+    {n:'Cmaj7',g:1,f:[-1,3,2,0,0,0], d:[0,3,2,0,0,0]},
+    {n:'Am7',g:1, f:[-1,0,2,0,1,0],  d:[0,0,2,0,1,0]},
+    {n:'Em7',g:1, f:[0,2,0,0,0,0],   d:[0,2,0,0,0,0]},
+    {n:'Dsus4',g:1,f:[-1,-1,0,2,3,3],d:[0,0,0,1,2,3]},
+    {n:'Cadd9',g:1,f:[-1,3,2,0,3,3], d:[0,2,1,0,3,4]},
+    {n:'F',  g:2, f:[1,3,3,2,1,1],   d:[1,3,4,2,1,1], b:[1,0,5]},
+    {n:'Bm', g:2, f:[-1,2,4,4,3,2],  d:[0,1,3,4,2,1], b:[2,1,5]},
+    {n:'B',  g:2, f:[-1,2,4,4,4,2],  d:[0,1,2,3,4,1], b:[2,1,5]},
+    {n:'F#m',g:2, f:[2,4,4,2,2,2],   d:[1,3,4,1,1,1], b:[2,0,5]},
+    {n:'Bb', g:2, f:[-1,1,3,3,3,1],  d:[0,1,2,3,4,1], b:[1,1,5]},
+    {n:'Cm', g:2, f:[-1,3,5,5,4,3],  d:[0,1,3,4,2,1], b:[3,1,5]},
+    {n:'Gm', g:2, f:[3,5,5,3,3,3],   d:[1,3,4,1,1,1], b:[3,0,5]}
+  ];
+  var CH_GROUPS=['Otwarte','Septymowe i kolory','Barre'];
+
+  /* ================= DANE: SKALE ================= */
+  var SCALES=[
+    {id:'pm', nm:'Pentatonika molowa', iv:[0,3,5,7,10],
+     tip:'Pięć dźwięków, zero pomyłek — na niej stoi cały blues i rock. Zacznij od pozycji 1.'},
+    {id:'pM', nm:'Pentatonika durowa', iv:[0,2,4,7,9],
+     tip:'Ta sama siatka co molowa, przesunięta o 3 progi w dół. Jaśniejsza, country i pop.'},
+    {id:'bl', nm:'Blues', iv:[0,3,5,6,7,10],
+     tip:'Pentatonika molowa + „blue note” (zmniejszona kwinta). Ten jeden dźwięk robi całą brudną robotę.'},
+    {id:'maj',nm:'Durowa (jońska)', iv:[0,2,4,5,7,9,11],
+     tip:'Podstawa wszystkiego. Do-re-mi. Z niej wyprowadza się każdy modus.'},
+    {id:'min',nm:'Molowa naturalna (eolska)', iv:[0,2,3,5,7,8,10],
+     tip:'Smutna siostra durowej. Ta sama siatka, inny punkt startu.'},
+    {id:'dor',nm:'Dorycka', iv:[0,2,3,5,7,9,10],
+     tip:'Moll z podniesioną sekstą — jazz, funk, Santana. Brzmi molowo, ale nie żałośnie.'},
+    {id:'mix',nm:'Miksolidyjska', iv:[0,2,4,5,7,9,10],
+     tip:'Dur z obniżoną septymą. Rock, blues, riffy na dominancie.'},
+    {id:'lyd',nm:'Lidyjska', iv:[0,2,4,6,7,9,11],
+     tip:'Dur z podwyższoną kwartą — unoszące się, filmowe brzmienie.'},
+    {id:'phr',nm:'Frygijska', iv:[0,1,3,5,7,8,10],
+     tip:'Obniżona sekunda daje hiszpański i metalowy posmak.'},
+    {id:'hm', nm:'Molowa harmoniczna', iv:[0,2,3,5,7,8,11],
+     tip:'Półtorej tonu między sekstą a septymą — neoklasyczny, „wschodni” zjazd.'}
+  ];
+
+  /* ================= DANE: BICIA ================= */
+  /* D = dół, U = góra, X = głuszenie, . = pauza (ręka idzie dalej) */
+  var STRUMS=[
+    {nm:'Puls', sub:2, p:'D.D.D.D.', bpm:70, tip:'Same dolne na puls. Nadgarstek luźny, jak strząsanie wody.'},
+    {nm:'Ósemki', sub:2, p:'DUDUDUDU', bpm:70, tip:'Ręka jak wahadło: ↓ na puls, ↑ pomiędzy. Nigdy się nie zatrzymuje.'},
+    {nm:'Pop', sub:2, p:'D.DUD.DU', bpm:88, tip:'Najczęstsze bicie świata. W pauzach ręka dalej się waha — tylko mija struny.'},
+    {nm:'Ballada', sub:2, p:'D.DU.UDU', bpm:76, tip:'Klasyk ogniska: ↓ · ↓↑ · ↑↓↑. Policz na głos „raz-i-dwa-i”.'},
+    {nm:'Reggae', sub:2, p:'.U.U.U.U', bpm:80, tip:'Tylko górne na „i”. Puls trzymaj stopą — to on jest niesłyszalny, nie ręka.'},
+    {nm:'Funk', sub:4, p:'D.XUD.XU.UX.DUXU', bpm:92, tip:'Głuszenie × robi tu całą robotę. Dłoń leży na strunach, ręka nie zwalnia.'},
+    {nm:'Walc', sub:2, p:'D.DUDU', bpm:96, tip:'Trzy na takt. Pierwsze uderzenie mocniejsze — to ono niesie walca.'},
+    {nm:'Rock 16', sub:4, p:'DUDUXUDUDUXUDUDU', bpm:84, tip:'Szesnastki z głuszeniem na „raz-e-i-e”. Trzymaj rękę małym ruchem.'}
+  ];
+
+  /* ================= DANE: TECHNIKA ================= */
+  var TECH=[
+    {lv:0,nm:'Chromatyka 1-2-3-4',tgt:[60,90,120,160],
+     d:'Po jednym palcu na próg, struna po strunie w górę i w dół. Palce zostają nad gryfem, nie odskakują.',
+     t:'e|--------------------------------|\nB|--------------------------------|\nG|--------------------------------|\nD|--------------------------------|\nA|--------------------------------|\nE|--1--2--3--4--2--3--4--5--------|\n     1  2  3  4  1  2  3  4'},
+    {lv:0,nm:'Pająk (spider)',tgt:[50,75,100,130],
+     d:'Kolejność 1-3-2-4 na przemian między dwiema strunami. Najlepsze ćwiczenie na niezależność palców.',
+     t:'e|--------------------------------|\nB|--------------------------------|\nG|--------------------------------|\nD|-----1-----2-----3-----4--------|\nA|--1-----3-----2-----4-----------|\nE|--------------------------------|\n   1  3  2  4  ...'},
+    {lv:1,nm:'Alternate picking',tgt:[70,100,140,180],
+     d:'Kostka ściśle na zmianę ↓↑. Zacznij na jednej strunie, licz ósemki, potem szesnastki.',
+     t:'e|--------------------------------|\nB|--------------------------------|\nG|--------------------------------|\nD|--------------------------------|\nA|--------------------------------|\nE|--0--0--0--0--0--0--0--0--------|\n   n  v  n  v  n  v  n  v'},
+    {lv:1,nm:'Zmiana strun',tgt:[60,85,110,145],
+     d:'Alternate picking przez trzy struny. Najtrudniejszy jest moment przeskoku — tam zwalniaj.',
+     t:'e|--------------------------------|\nB|--------------------------------|\nG|--5--7--5--7--------------------|\nD|--5--7--5--7--------------------|\nA|--5--7--5--7--------------------|\nE|--------------------------------|'},
+    {lv:2,nm:'Legato (H/P)',tgt:[60,90,120,150],
+     d:'Kostką tylko pierwszy dźwięk. Reszta z palców: hammer-on w górę, pull-off w dół. Siła z palca, nie z ramienia.',
+     t:'e|--------------------------------|\nB|--------------------------------|\nG|--------------------------------|\nD|--------------------------------|\nA|--------------------------------|\nE|--5h7p5--5h8p5--5h7p5-----------|'},
+    {lv:2,nm:'Bending ½ i 1 ton',tgt:[0,0,0,0],
+     d:'Podciągaj trzema palcami naraz, kciuk zahacza gryf od góry. Sprawdzaj wysokość: bend musi trafić dokładnie w nutę z progu wyżej.',
+     t:'e|--------------------------------|\nB|--8b(10)--8b(10)--8b(9)---------|\nG|--------------------------------|\nD|--------------------------------|\nA|--------------------------------|\nE|--------------------------------|'},
+    {lv:3,nm:'Economy picking',tgt:[70,100,130,165],
+     d:'Przy zmianie struny kostka idzie dalej w tę samą stronę zamiast wracać. Oszczędza ruch, ale wymaga uwagi.',
+     t:'e|--------------------------------|\nB|--------------------------------|\nG|--7--9--------------------------|\nD|--7--9--10----------------------|\nA|--7--9--10----------------------|\nE|--------------------------------|\n   n  n  n'},
+    {lv:3,nm:'String skipping',tgt:[60,85,110,140],
+     d:'Przeskakuj strunę. Ucz rękę celować, nie szukać — graj z zamkniętymi oczami, gdy już trafiasz.',
+     t:'e|--------------------------------|\nB|--------------------------------|\nG|--7-----9-----7-----------------|\nD|--------------------------------|\nA|--5-----7-----5-----------------|\nE|--------------------------------|'},
+    {lv:4,nm:'Sweep 3 struny',tgt:[50,75,100,130],
+     d:'Jeden płynny ruch kostki przez trzy struny, palce gaszą poprzedni dźwięk. Nie może powstać akord — tylko arpeggio.',
+     t:'e|--------------------------------|\nB|--------------------------------|\nG|--9-----9-----------------------|\nD|-----10----10-------------------|\nA|--------12----------------------|\nE|--------------------------------|\n   sweep w dół / w górę'},
+    {lv:4,nm:'Tapping 8-tap',tgt:[60,90,120,150],
+     d:'Palec prawej ręki uderza i zrywa strunę w bok. Lewa trzyma dwa dźwięki — triola powtarzana bez przerwy.',
+     t:'e|--12t--5h8--12t--5h8------------|\nB|--------------------------------|\nG|--------------------------------|\nD|--------------------------------|\nA|--------------------------------|\nE|--------------------------------|\n   t = tap prawą ręką'},
+    {lv:4,nm:'Hybrid picking',tgt:[60,85,115,145],
+     d:'Kostka gra basy, palce m i a zrywają wyższe struny jednocześnie. Country, fusion, nowoczesny rock.',
+     t:'e|-----8-----8--------------------|\nB|--------8-----8-----------------|\nG|--7-----7-----------------------|\nD|--------------------------------|\nA|--------------------------------|\nE|--------------------------------|\n   n  m  a  m'}
+  ];
+  var TECH_LV=['Podstawy','Kostka','Legato','Prędkość','Wirtuoz'];
+
+  /* ================= SVG: DIAGRAM AKORDU ================= */
+  function chordSVG(c){
+    var W=84,H=96,L=9,TOP=18,BOT=8;
+    var sw=(W-L*2)/5, fh=(H-TOP-BOT)/4;
+    var used=[],i;
+    for(i=0;i<6;i++) if(c.f[i]>0) used.push(c.f[i]);
+    var mn=used.length?Math.min.apply(null,used):1;
+    var mx=used.length?Math.max.apply(null,used):1;
+    var base=(mx<=4)?1:mn;
+    var s='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" aria-hidden="true">';
+    /* progi */
+    for(i=0;i<=4;i++){
+      var y=TOP+i*fh, thick=(i===0&&base===1)?2.6:1;
+      s+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-L)+'" y2="'+y+'" stroke="'+(i===0&&base===1?'#F6EFE6':'rgba(255,255,255,.25)')+'" stroke-width="'+thick+'"/>';
+    }
+    /* struny */
+    for(i=0;i<6;i++){
+      var x=L+i*sw;
+      s+='<line x1="'+x+'" y1="'+TOP+'" x2="'+x+'" y2="'+(TOP+4*fh)+'" stroke="rgba(255,255,255,.25)" stroke-width="1"/>';
+    }
+    if(base>1) s+='<text x="2" y="'+(TOP+fh*0.72)+'" fill="#9A8E82" font-size="9" font-family="monospace">'+base+'</text>';
+    /* barre */
+    if(c.b){
+      var rel=c.b[0]-base+1;
+      if(rel>=1&&rel<=4){
+        var x1=L+c.b[1]*sw, x2=L+c.b[2]*sw, yy=TOP+(rel-0.5)*fh;
+        s+='<rect x="'+(x1-5)+'" y="'+(yy-5)+'" width="'+(x2-x1+10)+'" height="10" rx="5" fill="#FFB020" opacity=".92"/>';
+      }
+    }
+    /* markery nad gryfem + kropki */
+    for(i=0;i<6;i++){
+      var fx=L+i*sw, fr=c.f[i];
+      if(fr<0){ s+='<text x="'+fx+'" y="12" fill="#FF3B5C" font-size="10" text-anchor="middle">x</text>'; continue; }
+      if(fr===0){ s+='<circle cx="'+fx+'" cy="8.5" r="3.4" fill="none" stroke="#2DD4BF" stroke-width="1.5"/>'; continue; }
+      var r2=fr-base+1;
+      if(r2<1||r2>4) continue;
+      var cy=TOP+(r2-0.5)*fh;
+      var isB=c.b&&c.b[0]===fr&&i>=c.b[1]&&i<=c.b[2];
+      if(!isB) s+='<circle cx="'+fx+'" cy="'+cy+'" r="5.6" fill="#FFB020"/>';
+      var fg=c.d?c.d[i]:0;
+      if(fg>0) s+='<text x="'+fx+'" y="'+(cy+3.2)+'" fill="#140F0A" font-size="8.5" font-weight="700" text-anchor="middle" font-family="monospace">'+fg+'</text>';
+    }
+    return s+'</svg>';
+  }
+
+  /* ================= SVG: GRYF ================= */
+  var FRETS=15;
+  function boardSVG(rootPc, ivs, win, showNames){
+    var fw=46, L=52, TOP=16, sh=21, H=TOP+sh*5+26, W=L+fw*FRETS+14;
+    var set={}, i, k;
+    for(i=0;i<ivs.length;i++) set[(rootPc+ivs[i])%12]=i;
+    var s='<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">';
+    s+='<rect x="'+L+'" y="'+(TOP-7)+'" width="'+(fw*FRETS)+'" height="'+(sh*5+14)+'" rx="5" fill="rgba(255,255,255,.04)"/>';
+    /* znaczniki pozycji */
+    [3,5,7,9,15].forEach(function(n){
+      s+='<circle cx="'+(L+(n-0.5)*fw)+'" cy="'+(TOP+sh*2.5)+'" r="4.6" fill="rgba(255,255,255,.1)"/>';
+    });
+    s+='<circle cx="'+(L+11.5*fw)+'" cy="'+(TOP+sh*1.5)+'" r="4.6" fill="rgba(255,255,255,.1)"/>';
+    s+='<circle cx="'+(L+11.5*fw)+'" cy="'+(TOP+sh*3.5)+'" r="4.6" fill="rgba(255,255,255,.1)"/>';
+    /* progi */
+    for(k=0;k<=FRETS;k++){
+      var x=L+k*fw;
+      s+='<line x1="'+x+'" y1="'+TOP+'" x2="'+x+'" y2="'+(TOP+sh*5)+'" stroke="'+(k===0?'#F6EFE6':'rgba(255,255,255,.22)')+'" stroke-width="'+(k===0?3:1)+'"/>';
+      if(k>0) s+='<text x="'+(L+(k-0.5)*fw)+'" y="'+(TOP+sh*5+17)+'" fill="#6E645B" font-size="9.5" text-anchor="middle" font-family="monospace">'+k+'</text>';
+    }
+    /* struny + kropki (struna 0 = gruba E na dole) */
+    for(i=0;i<6;i++){
+      var y=TOP+(5-i)*sh;
+      s+='<line x1="'+L+'" y1="'+y+'" x2="'+(L+fw*FRETS)+'" y2="'+y+'" stroke="rgba(255,255,255,'+(0.17+i*0.035)+')" stroke-width="'+(1.9-i*0.18)+'"/>';
+      s+='<text x="'+(L-36)+'" y="'+(y+3.5)+'" fill="#9A8E82" font-size="10" text-anchor="middle" font-family="monospace">'+tuning.lbl[i]+'</text>';
+      for(k=0;k<=FRETS;k++){
+        var midi=tuning.s[i]+k, pc=midi%12;
+        if(!(pc in set)) continue;
+        if(win && (k<win[0]||k>win[1])) continue;
+        var isRoot=(pc===rootPc%12);
+        var cx=(k===0)?(L-16):(L+(k-0.5)*fw);
+        var r=isRoot?8:6.6;
+        s+='<circle cx="'+cx+'" cy="'+y+'" r="'+r+'" fill="'+(isRoot?'#FFB020':'#2DD4BF')+'" opacity="'+(isRoot?1:.82)+'"/>';
+        if(showNames) s+='<text x="'+cx+'" y="'+(y+3.2)+'" fill="#0A0908" font-size="8" font-weight="700" text-anchor="middle" font-family="monospace">'+mname(midi)+'</text>';
+      }
+    }
+    return s+'</svg>';
+  }
+
+  /* ================= NAWIGACJA ================= */
+  var VIEWS=['path','tuner','chords','rhythm','fret','tech','ear'];
+  var curView='path';
+  function stopAll(){ rStop(); mStop(); chgStop(); tunerStop(); }
+  function show(v){
+    if(v!==curView) stopAll();
+    curView=v;
+    VIEWS.forEach(function(x){ el('v-'+x).classList.toggle('on',x===v); });
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(t){
+      t.classList.toggle('on',t.dataset.view===v);
+    });
+    window.scrollTo(0,0);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(t){
+    t.addEventListener('click',function(){ show(t.dataset.view); });
+  });
+
+  /* ================= ŚCIEŻKA ================= */
+  function renderLevels(){
+    var box=el('levels'); box.innerHTML='';
+    var n=0;
+    LEVELS.forEach(function(L,i){
+      var done=!!store.done[i]; if(done) n++;
+      var b=mk('button','lvl'+(done?' done':''));
+      b.setAttribute('aria-pressed',done);
+      var h=mk('div','ln');
+      h.appendChild(mk('span','num',String(i)));
+      h.appendChild(mk('span','nm',L.nm));
+      if(done) h.appendChild(mk('span','tick','✓'));
+      b.appendChild(h);
+      b.appendChild(mk('p','sub',L.sub));
+      var sk=mk('div','skills');
+      L.skills.forEach(function(s){ sk.appendChild(mk('span','skill',s)); });
+      b.appendChild(sk);
+      var g=mk('p','sub');
+      g.innerHTML='<b style="color:var(--amber)">Próg wyjścia:</b> '+L.goal;
+      b.appendChild(g);
+      b.addEventListener('click',function(){
+        store.done[i]=!store.done[i]; save(); renderLevels();
+        toast(store.done[i]?('Poziom '+i+' zaliczony 🔥'):('Poziom '+i+' odznaczony'));
+      });
+      box.appendChild(b);
+    });
+    el('path-bar').style.width=Math.round(n/LEVELS.length*100)+'%';
+    el('path-stat').textContent=n+' z '+LEVELS.length+' poziomów zaliczonych';
+  }
+
+  /* ================= STROIK ================= */
+  var micStream=null, micAn=null, micBuf=null, micReady=false, tunerT=null;
+  function renderTunings(){
+    var box=el('tunings'); box.innerHTML='';
+    TUNINGS.forEach(function(T,i){
+      var b=mk('button','chip'+(i===0?' on':''),T.nm);
+      b.addEventListener('click',function(){
+        tuning=T; pick(box,i); renderStrings(); renderBoard();
+        toast('Strój: '+T.nm);
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderStrings(){
+    var box=el('t-strings'); box.innerHTML='';
+    tuning.lbl.forEach(function(l,i){
+      var b=mk('button','st6',l);
+      b.addEventListener('click',function(){ ensureAudio(); pluck(tuning.s[i],ctx.currentTime+0.02,0.6); });
+      box.appendChild(b);
+    });
+  }
+  el('mic-btn').addEventListener('click',function(){
+    if(micReady){ tunerStop(); stopMic(); return; }
+    ensureAudio();
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+      el('mic-stat').textContent='Ta przeglądarka nie udostępnia mikrofonu.'; return;
+    }
+    navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})
+      .then(function(st){
+        micStream=st; micReady=true;
+        var src=ctx.createMediaStreamSource(st);
+        micAn=ctx.createAnalyser(); micAn.fftSize=2048;
+        micBuf=new Float32Array(micAn.fftSize);
+        src.connect(micAn);
+        el('mic-btn').textContent='Wyłącz mikrofon';
+        el('mic-btn').classList.add('on');
+        el('mic-stat').textContent='Mikrofon działa — zagraj pustą strunę.';
+        el('t-bar').classList.add('live');
+        tunerT=setInterval(tunerTick,90);
+      })
+      .catch(function(){ el('mic-stat').textContent='Brak zgody na mikrofon. Włącz dostęp w ustawieniach.'; });
+  });
+  function stopMic(){
+    if(micStream){ micStream.getTracks().forEach(function(t){t.stop();}); micStream=null; }
+    micReady=false; micAn=null;
+    el('mic-btn').textContent='Włącz mikrofon'; el('mic-btn').classList.remove('on');
+    el('mic-stat').textContent='Do strojenia potrzebny jest mikrofon.';
+  }
+  function tunerStop(){
+    if(tunerT){ clearInterval(tunerT); tunerT=null; }
+    el('t-bar').classList.remove('live','ok');
+    el('t-note').textContent='—';
+    el('t-cents').textContent=micReady?'zagraj strunę':'włącz mikrofon i zagraj strunę';
+    Array.prototype.forEach.call(el('t-strings').children,function(c){ c.classList.remove('near','ok'); });
+  }
+  /* autokorelacja z interpolacją paraboliczną */
+  function detectPitch(){
+    if(!micAn) return -1;
+    micAn.getFloatTimeDomainData(micBuf);
+    var b=micBuf, N=1024, sr=ctx.sampleRate, i, r0=0;
+    for(i=0;i<N;i++) r0+=b[i]*b[i];
+    if(Math.sqrt(r0/N)<0.011) return -1;
+    var minLag=Math.floor(sr/1000), maxLag=Math.min(N-2,Math.floor(sr/60));
+    var vals=new Float32Array(maxLag+2), crossed=false, best=-1, bv=0, lag, sum;
+    for(lag=minLag;lag<=maxLag;lag++){
+      sum=0; for(i=0;i<N-lag;i++) sum+=b[i]*b[i+lag];
+      vals[lag]=sum;
+      if(!crossed && sum<0) crossed=true;
+      if(crossed && sum>bv){ bv=sum; best=lag; }
+    }
+    if(best<0){ for(lag=minLag;lag<=maxLag;lag++) if(vals[lag]>bv){ bv=vals[lag]; best=lag; } }
+    if(best<1 || bv<r0*0.24) return -1;
+    var y1=vals[best-1]||bv, y2=bv, y3=vals[best+1]||bv;
+    var den=(y1-2*y2+y3), d=den?((y1-y3)/(2*den)):0;
+    if(!isFinite(d)||d>1||d<-1) d=0;
+    return sr/(best+d);
+  }
+  function tunerTick(){
+    var f=detectPitch();
+    var note=el('t-note'), bar=el('t-bar'), ndl=el('t-ndl'), ct=el('t-cents');
+    var sb=el('t-strings').children, i;
+    if(f<0){
+      note.textContent='—'; bar.classList.remove('ok');
+      ct.textContent='zagraj strunę';
+      for(i=0;i<sb.length;i++) sb[i].classList.remove('near','ok');
+      return;
+    }
+    var bi=0, bd=1e9;
+    for(i=0;i<6;i++){
+      var d=Math.abs(1200*Math.log2(f/mf(tuning.s[i])));
+      if(d<bd){ bd=d; bi=i; }
+    }
+    var cents=1200*Math.log2(f/mf(tuning.s[bi]));
+    var ok=Math.abs(cents)<5;
+    var cl=Math.max(-50,Math.min(50,cents));
+    ndl.style.left=(50+cl).toFixed(1)+'%';
+    bar.classList.toggle('ok',ok);
+    note.innerHTML=tuning.lbl[bi]+' <small>'+f.toFixed(1)+' Hz</small>';
+    ct.textContent=(cents>0?'+':'')+cents.toFixed(0)+' centów '+
+      (ok?'— stroi ✨':(cents<0?'— za nisko, podkręć':'— za wysoko, poluzuj'));
+    for(i=0;i<sb.length;i++){
+      sb[i].classList.toggle('near',i===bi&&!ok);
+      sb[i].classList.toggle('ok',i===bi&&ok);
+    }
+  }
+  el('t-ref').addEventListener('click',function(){
+    ensureAudio();
+    var t=ctx.currentTime+0.05;
+    for(var i=0;i<6;i++) pluck(tuning.s[i],t+i*0.42,0.55);
+    toast('Wzorzec: '+tuning.lbl.join(' · '));
+  });
+
+  /* ================= AKORDY ================= */
+  var chGroup=0, chSel=0;
+  function chordsIn(g){ return CHORDS.filter(function(c){ return c.g===g; }); }
+  function renderChordGroups(){
+    var box=el('chord-groups'); box.innerHTML='';
+    CH_GROUPS.forEach(function(g,i){
+      var b=mk('button','chip'+(i===0?' on':''),g);
+      b.addEventListener('click',function(){ chGroup=i; chSel=0; pick(box,i); renderChords(); });
+      box.appendChild(b);
+    });
+  }
+  function renderChords(){
+    var box=el('chord-list'); box.innerHTML='';
+    var list=chordsIn(chGroup);
+    list.forEach(function(c,i){
+      var d=mk('div','cd'+(i===chSel?' on':''));
+      d.innerHTML='<div class="cdn">'+c.n+'</div>'+chordSVG(c);
+      d.addEventListener('click',function(){
+        chSel=i; renderChords(); playChord(c,'D');
+      });
+      box.appendChild(d);
+    });
+    chInfo();
+  }
+  function curChord(){ var l=chordsIn(chGroup); return l[Math.min(chSel,l.length-1)]; }
+  function chInfo(){
+    var c=curChord(); if(!c) return;
+    var names=[],i;
+    for(i=0;i<6;i++) if(c.f[i]>=0) names.push(tuning.lbl[i]+':'+mname(tuning.s[i]+c.f[i]));
+    el('ch-info').textContent=c.n+' — '+names.join('  ');
+  }
+  function playChord(c,dir){ ensureAudio(); strum(c.f,ctx.currentTime+0.03,dir||'D',0.55); chInfo(); }
+  el('ch-play').addEventListener('click',function(){ playChord(curChord(),'D'); });
+  el('ch-arp').addEventListener('click',function(){
+    ensureAudio();
+    var c=curChord(), t=ctx.currentTime+0.04, k=0;
+    for(var i=0;i<6;i++){ if(c.f[i]<0) continue; pluck(tuning.s[i]+c.f[i],t+k*0.17,0.55); k++; }
+  });
+
+  /* --- zmiany akordów --- */
+  var chgOn=false, chgT=null, chgI=0, chgNext=0;
+  function fillSelects(){
+    var a=el('chg-a'), b=el('chg-b');
+    CHORDS.forEach(function(c,i){
+      var o1=mk('option',null,c.n); o1.value=i; a.appendChild(o1);
+      var o2=mk('option',null,c.n); o2.value=i; b.appendChild(o2);
+    });
+    a.value=0; b.value=6;
+  }
+  function chgStop(){
+    if(chgT){ clearInterval(chgT); chgT=null; }
+    chgOn=false;
+    el('chg-go').textContent='► Start'; el('chg-go').classList.remove('playing');
+    el('chg-now').textContent='—';
+  }
+  function chgStart(){
+    ensureAudio(); chgOn=true; chgI=0;
+    el('chg-go').textContent='■ Stop'; el('chg-go').classList.add('playing');
+    var bpm=+el('chg-bpm').value, beat=60/bpm, bar=beat*4;
+    chgNext=ctx.currentTime+0.25;
+    var beatN=0;
+    chgT=setInterval(function(){
+      while(chgNext<ctx.currentTime+0.15){
+        var inBar=beatN%4;
+        click(chgNext,inBar===0);
+        if(inBar===0 && beatN%8===0){
+          var idx=(chgI%2===0)?+el('chg-a').value:+el('chg-b').value;
+          var c=CHORDS[idx];
+          strum(c.f,chgNext,'D',0.5);
+          (function(nm){ setTimeout(function(){ if(chgOn) el('chg-now').textContent=nm; },
+            Math.max(0,(chgNext-ctx.currentTime)*1000)); })(c.n);
+          chgI++;
+        }
+        beatN++; chgNext+=beat;
+      }
+    },25);
+  }
+  el('chg-go').addEventListener('click',function(){ chgOn?chgStop():chgStart(); });
+  el('chg-bpm').addEventListener('input',function(){
+    el('chg-bpmv').textContent=this.value;
+    if(chgOn){ chgStop(); chgStart(); }
+  });
+
+  /* ================= RYTM: BICIA ================= */
+  var sSel=0, rOn=false, rT=null, rNext=0, rCell=0, rMetro=true, rChord=true, rQ=[];
+  var R_CHORD=[0,2,2,0,0,0];   /* Em — brzmi dobrze w każdym stroju */
+  function strumPat(){ return STRUMS[sSel]; }
+  function renderStrums(){
+    var box=el('strum-list'); box.innerHTML='';
+    STRUMS.forEach(function(S,i){
+      var b=mk('button','chip'+(i===0?' on':''),S.nm);
+      b.addEventListener('click',function(){
+        rStop(); sSel=i; pick(box,i);
+        el('r-bpm').value=S.bpm; el('r-bpmv').textContent=S.bpm;
+        renderGrid();
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderGrid(){
+    var S=strumPat(), g=el('r-grid'), d=el('r-dots');
+    el('strum-tip').textContent=S.tip;
+    g.innerHTML=''; d.innerHTML='';
+    for(var i=0;i<S.p.length;i++){
+      var a=S.p[i];
+      var c=mk('div','cell'+((i%S.sub===0)?' beat':''));
+      if(a!=='.') c.setAttribute('data-a',a);
+      var sym=a==='D'?'↓':a==='U'?'↑':a==='X'?'×':'·';
+      c.innerHTML='<span class="a">'+sym+'</span><span class="n">'+(i%S.sub===0?(i/S.sub+1):'')+'</span>';
+      g.appendChild(c);
+    }
+    var beats=Math.round(S.p.length/S.sub);
+    for(var k=0;k<beats;k++) d.appendChild(mk('div','dot'));
+  }
+  function rStop(){
+    if(rT){ clearInterval(rT); rT=null; }
+    rOn=false; rQ.length=0;
+    el('r-go').textContent='► Graj'; el('r-go').classList.remove('playing');
+    Array.prototype.forEach.call(el('r-grid').children,function(c){ c.classList.remove('active'); });
+    Array.prototype.forEach.call(el('r-dots').children,function(c){ c.classList.remove('lit'); });
+  }
+  function rStart(){
+    ensureAudio(); if(rOn) return;
+    rOn=true; rCell=0; rQ.length=0;
+    el('r-go').textContent='■ Stop'; el('r-go').classList.add('playing');
+    rNext=ctx.currentTime+0.2;
+    rT=setInterval(rSched,25);
+    requestAnimationFrame(rDraw);
+  }
+  function rSched(){
+    var S=strumPat(), bpm=+el('r-bpm').value, step=(60/bpm)/S.sub;
+    while(rNext<ctx.currentTime+0.14){
+      var a=S.p[rCell], onBeat=(rCell%S.sub===0);
+      if(rMetro&&onBeat) click(rNext,rCell===0?1:0);
+      if(rChord){
+        if(a==='D') strum(R_CHORD,rNext,'D',0.5);
+        else if(a==='U') strum(R_CHORD,rNext,'U',0.42);
+        else if(a==='X') mute(rNext);
+      }
+      rQ.push({i:rCell,t:rNext,b:onBeat,beat:rCell/S.sub});
+      rCell=(rCell+1)%S.p.length;
+      rNext+=step;
+    }
+  }
+  function rDraw(){
+    if(!rOn) return;
+    var now=ctx?ctx.currentTime:0;
+    while(rQ.length && rQ[0].t<=now){
+      var e=rQ.shift();
+      var cells=el('r-grid').children, dots=el('r-dots').children, i;
+      for(i=0;i<cells.length;i++) cells[i].classList.toggle('active',i===e.i);
+      if(e.b) for(i=0;i<dots.length;i++) dots[i].classList.toggle('lit',i===Math.round(e.beat));
+    }
+    requestAnimationFrame(rDraw);
+  }
+  el('r-go').addEventListener('click',function(){ rOn?rStop():rStart(); });
+  el('r-bpm').addEventListener('input',function(){ el('r-bpmv').textContent=this.value; });
+  el('r-metro').addEventListener('click',function(){
+    rMetro=!rMetro; this.classList.toggle('on',rMetro); this.setAttribute('aria-pressed',rMetro);
+  });
+  el('r-chord').addEventListener('click',function(){
+    rChord=!rChord; this.classList.toggle('on',rChord); this.setAttribute('aria-pressed',rChord);
+  });
+
+  /* ================= METRONOM ================= */
+  var mOn=false, mT=null, mNext=0, mBeat=0, mSub=1, mAuto=false, mBars=0, mQ=[];
+  var M_SUBS=[['Ćwierćnuty',1],['Ósemki',2],['Triole',3],['Szesnastki',4]];
+  function renderSubs(){
+    var box=el('m-subs'); box.innerHTML='';
+    M_SUBS.forEach(function(S,i){
+      var b=mk('button','chip sm'+(i===0?' on':''),S[0]);
+      b.addEventListener('click',function(){
+        mSub=S[1]; pick(box,i);
+        if(mOn){ mStop(); mStart(); }   /* inaczej licznik taktów rozjeżdża się */
+      });
+      box.appendChild(b);
+    });
+  }
+  function mDots(){
+    var d=el('m-dots'); d.innerHTML='';
+    for(var i=0;i<+el('m-beats').value;i++) d.appendChild(mk('div','dot'));
+  }
+  function mStop(){
+    if(mT){ clearInterval(mT); mT=null; }
+    mOn=false; mQ.length=0;
+    el('m-go').textContent='► Start'; el('m-go').classList.remove('playing');
+    el('m-state').textContent='zatrzymany';
+    Array.prototype.forEach.call(el('m-dots').children,function(c){ c.classList.remove('lit'); });
+  }
+  function mStart(){
+    ensureAudio(); if(mOn) return;
+    mOn=true; mBeat=0; mBars=0; mQ.length=0;
+    el('m-go').textContent='■ Stop'; el('m-go').classList.add('playing');
+    mNext=ctx.currentTime+0.18;
+    mT=setInterval(mSched,25);
+    requestAnimationFrame(mDraw);
+  }
+  function mSched(){
+    var beats=+el('m-beats').value;
+    while(mNext<ctx.currentTime+0.14){
+      var bpm=+el('m-bpm').value, step=(60/bpm)/mSub;
+      var sub=mBeat%mSub, b=Math.floor(mBeat/mSub)%beats;
+      click(mNext, sub!==0 ? -1 : (b===0?1:0));
+      mQ.push({t:mNext,b:b,sub:sub});
+      mBeat++;
+      if(mBeat%(mSub*beats)===0){
+        mBars++;
+        if(mAuto && mBars%4===0){
+          var nb=Math.min(260,+el('m-bpm').value+2);
+          el('m-bpm').value=nb; el('m-bpmv').textContent=nb; el('m-bpm-big').textContent=nb;
+        }
+      }
+      mNext+=step;
+    }
+  }
+  function mDraw(){
+    if(!mOn) return;
+    var now=ctx?ctx.currentTime:0;
+    while(mQ.length && mQ[0].t<=now){
+      var e=mQ.shift(), dots=el('m-dots').children;
+      if(e.sub===0) for(var i=0;i<dots.length;i++) dots[i].classList.toggle('lit',i===e.b);
+      el('m-state').textContent='takt '+(mBars+1)+' · '+el('m-bpm').value+' BPM';
+    }
+    requestAnimationFrame(mDraw);
+  }
+  el('m-go').addEventListener('click',function(){ mOn?mStop():mStart(); });
+  el('m-bpm').addEventListener('input',function(){
+    el('m-bpmv').textContent=this.value; el('m-bpm-big').textContent=this.value;
+  });
+  el('m-beats').addEventListener('input',function(){
+    el('m-beatsv').textContent=this.value; mDots();
+  });
+  el('m-auto').addEventListener('click',function(){
+    mAuto=!mAuto; this.classList.toggle('on',mAuto); this.setAttribute('aria-pressed',mAuto);
+    el('m-autoinfo').hidden=!mAuto;
+  });
+
+  /* ================= GRYF ================= */
+  var fRoot=9, fScale=0, fPos=0, fNames=false;   /* 9 = A */
+  function renderFretSelects(){
+    var r=el('f-root');
+    NOTES.forEach(function(n,i){ var o=mk('option',null,n); o.value=i; r.appendChild(o); });
+    r.value=fRoot;
+    var s=el('f-scale');
+    SCALES.forEach(function(S,i){ var o=mk('option',null,S.nm); o.value=i; s.appendChild(o); });
+    s.value=0;
+    r.addEventListener('change',function(){ fRoot=+this.value; renderPos(); renderBoard(); });
+    s.addEventListener('change',function(){ fScale=+this.value; fPos=0; renderPos(); renderBoard(); });
+  }
+  /* pozycja k zaczyna się tam, gdzie k-ty stopień skali leży na grubej strunie E */
+  function posWindow(k){
+    if(k===0) return null;
+    var S=SCALES[fScale], iv=S.iv, deg=iv[(k-1)%iv.length];
+    var open=tuning.s[0]%12, want=(fRoot+deg)%12;
+    var start=((want-open)%12+12)%12;
+    if(start>FRETS-4) start-=12;
+    if(start<0) start=((want-open)%12+12)%12;
+    return [Math.max(0,start),Math.min(FRETS,start+4)];
+  }
+  function renderPos(){
+    var box=el('f-pos'); box.innerHTML='';
+    var S=SCALES[fScale], n=Math.min(5,S.iv.length);
+    var labels=['Cały gryf']; for(var i=1;i<=n;i++) labels.push('Poz. '+i);
+    labels.forEach(function(L,i){
+      var b=mk('button','chip sm'+(i===fPos?' on':''),L);
+      b.addEventListener('click',function(){ fPos=i; pick(box,i); renderBoard(); });
+      box.appendChild(b);
+    });
+  }
+  function renderBoard(){
+    var S=SCALES[fScale];
+    el('f-board').innerHTML=boardSVG(fRoot,S.iv,posWindow(fPos),fNames);
+    el('f-info').textContent=NOTES[fRoot]+' '+S.nm+' — '+S.iv.length+' dźwięków: '+
+      S.iv.map(function(v){ return NOTES[(fRoot+v)%12]; }).join(' · ');
+    el('f-tip').innerHTML='<b>'+S.nm+':</b> '+S.tip;
+  }
+  el('f-names').addEventListener('click',function(){
+    fNames=!fNames; this.classList.toggle('on',fNames); this.setAttribute('aria-pressed',fNames);
+    renderBoard();
+  });
+  el('f-play').addEventListener('click',function(){
+    ensureAudio();
+    var S=SCALES[fScale], win=posWindow(fPos)||[0,FRETS];
+    var seq=[],i,k;
+    for(i=0;i<6;i++) for(k=win[0];k<=win[1];k++){
+      var m=tuning.s[i]+k;
+      if(S.iv.indexOf((((m-fRoot)%12)+12)%12)>=0) seq.push(m);
+    }
+    seq.sort(function(a,b){return a-b;});
+    var uniq=seq.filter(function(v,ix){ return ix===0||v!==seq[ix-1]; }).slice(0,22);
+    var t=ctx.currentTime+0.05;
+    uniq.forEach(function(m,ix){ pluck(m,t+ix*0.16,0.5); });
+    toast(uniq.length+' dźwięków w górę');
+  });
+
+  /* ================= TECHNIKA ================= */
+  var techLv=0;
+  function renderTechLv(){
+    var box=el('tech-lv'); box.innerHTML='';
+    TECH_LV.forEach(function(L,i){
+      var b=mk('button','chip'+(i===0?' on':''),L);
+      b.addEventListener('click',function(){ techLv=i; pick(box,i); renderTech(); });
+      box.appendChild(b);
+    });
+  }
+  function renderTech(){
+    var box=el('tech-list'); box.innerHTML='';
+    var list=TECH.filter(function(T){ return T.lv===techLv; });
+    if(!list.length){ box.appendChild(mk('p','muted','Brak ćwiczeń na tym poziomie.')); return; }
+    list.forEach(function(T){
+      var key=T.nm;
+      var d=mk('div','ex');
+      var h=mk('div','exh');
+      h.appendChild(mk('span','exn',T.nm));
+      var tg=T.tgt.filter(function(x){return x>0;});
+      if(tg.length) h.appendChild(mk('span','tgt','cel: '+tg.join(' → ')+' BPM'));
+      d.appendChild(h);
+      d.appendChild(mk('p','exd',T.d));
+      var pre=mk('pre','tabx'); pre.textContent=T.t; d.appendChild(pre);
+      var row=mk('div','row');
+      var best=store.pb[key]||0;
+      var pb=mk('span','pb',best?('rekord: '+best+' BPM'):'brak rekordu');
+      var bGo=mk('button','ghost','► Metronom '+(best?Math.min(260,best):(tg[0]||60))+' BPM');
+      bGo.addEventListener('click',function(){
+        var v=best?Math.min(260,best):(tg[0]||60);
+        el('m-bpm').value=v; el('m-bpmv').textContent=v; el('m-bpm-big').textContent=v;
+        show('rhythm'); mStop(); mStart();
+        toast(T.nm+' — metronom '+v+' BPM');
+      });
+      var bPb=mk('button','ghost','Zapisz rekord');
+      bPb.addEventListener('click',function(){
+        var v=+el('m-bpm').value;
+        if(!store.pb[key]||v>store.pb[key]){
+          store.pb[key]=v; save(); pb.textContent='rekord: '+v+' BPM';
+          toast('Nowy rekord: '+v+' BPM 🔥');
+        } else toast('Rekord to nadal '+store.pb[key]+' BPM');
+      });
+      row.appendChild(bGo); row.appendChild(bPb); row.appendChild(pb);
+      d.appendChild(row);
+      box.appendChild(d);
+    });
+  }
+
+  /* ================= SŁUCH ================= */
+  var IVALS=[['Pryma',0],['Sekunda m.',1],['Sekunda w.',2],['Tercja m.',3],['Tercja w.',4],
+             ['Kwarta',5],['Tryton',6],['Kwinta',7],['Seksta m.',8],['Seksta w.',9],
+             ['Septyma m.',10],['Septyma w.',11],['Oktawa',12]];
+  var QUAL=[['Durowy',[0,4,7]],['Molowy',[0,3,7]],['Zmniejszony',[0,3,6]],['Zwiększony',[0,4,8]],
+            ['Dur 7',[0,4,7,10]],['Maj7',[0,4,7,11]],['Moll 7',[0,3,7,10]]];
+  var earMode=0, earAns=null, earRoot=52, earLock=false;
+  function renderEarModes(){
+    var box=el('ear-modes'); box.innerHTML='';
+    ['Interwały','Akordy'].forEach(function(n,i){
+      var b=mk('button','chip'+(i===0?' on':''),n);
+      b.addEventListener('click',function(){ earMode=i; pick(box,i); earAns=null; renderEarOpts(); });
+      box.appendChild(b);
+    });
+  }
+  function earPool(){ return earMode===0?IVALS.slice(1,9):QUAL; }
+  function renderEarOpts(){
+    var box=el('ear-opts'); box.innerHTML='';
+    earPool().forEach(function(o,i){
+      var b=mk('button','opt',o[0]);
+      b.addEventListener('click',function(){ earGuess(i,b); });
+      box.appendChild(b);
+    });
+    earScore();
+  }
+  function earScore(){
+    var e=store.ear;
+    el('ear-score').textContent=e.all?(e.ok+' / '+e.all+' poprawnych ('+Math.round(e.ok/e.all*100)+'%)'):'—';
+  }
+  function earNew(){
+    ensureAudio();
+    var pool=earPool();
+    earAns=Math.floor(Math.random()*pool.length);
+    earRoot=45+Math.floor(Math.random()*13);
+    earLock=false;
+    Array.prototype.forEach.call(el('ear-opts').children,function(c){ c.classList.remove('good','bad'); });
+    earPlay();
+  }
+  function earPlay(){
+    if(earAns==null){ earNew(); return; }
+    ensureAudio();
+    var t=ctx.currentTime+0.05, pool=earPool();
+    if(earMode===0){
+      var semi=pool[earAns][1];
+      pluck(earRoot,t,0.55); pluck(earRoot+semi,t+0.55,0.55);
+    } else {
+      var iv=pool[earAns][1];
+      iv.forEach(function(v,i){ pluck(earRoot+v,t+i*0.045,0.5); });
+    }
+  }
+  function earGuess(i,btn){
+    if(earAns==null){ toast('Najpierw ♪ Zagraj'); return; }
+    if(earLock) return;
+    earLock=true;
+    var ok=(i===earAns);
+    store.ear.all++; if(ok) store.ear.ok++;
+    save(); earScore();
+    btn.classList.add(ok?'good':'bad');
+    if(!ok) el('ear-opts').children[earAns].classList.add('good');
+    toast(ok?'Dobrze! 🎯':('To było: '+earPool()[earAns][0]));
+    setTimeout(function(){ if(curView==='ear') earNew(); },1150);
+  }
+  el('ear-play').addEventListener('click',earNew);
+  el('ear-again').addEventListener('click',earPlay);
+
+  /* ================= INIT ================= */
+  el('reset').addEventListener('click',function(){
+    store={done:{},pb:{},ear:{ok:0,all:0}}; save();
+    renderLevels(); renderTech(); earScore();
+    toast('Postępy wyczyszczone');
+  });
+  renderLevels();
+  renderTunings(); renderStrings();
+  renderChordGroups(); renderChords(); fillSelects();
+  renderStrums(); renderGrid(); renderSubs(); mDots();
+  renderFretSelects(); renderPos(); renderBoard();
+  renderTechLv(); renderTech();
+  renderEarModes(); renderEarOpts();
+  document.addEventListener('visibilitychange',function(){ if(document.hidden) stopAll(); });
+})();
+</script>
+</body>
+</html>

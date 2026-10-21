@@ -1,0 +1,80 @@
+name: Build iOS
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wersja Xcode
+        run: xcodebuild -version
+
+      - name: Zainstaluj XcodeGen
+        run: brew install xcodegen
+
+      - name: Wygeneruj projekt
+        run: cd ios && xcodegen generate
+
+      - name: Zbuduj (bez podpisu)
+        run: |
+          set -eo pipefail
+          xcodebuild \
+            -project ios/BartekJones.xcodeproj \
+            -scheme BartekJones \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Sprawdź zawartość pakietu
+        run: |
+          set -e
+          APP=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' | head -1)
+          test -n "$APP" || { echo '::error::Nie powstał .app'; exit 1; }
+          echo "APP=$APP"
+          # najczęstszy błąd w takim wrapperze: aplikacja webowa nie trafia do bundle'a
+          test -f "$APP/index.html" || { echo '::error::index.html nie trafił do pakietu — sprawdź resources w ios/project.yml'; exit 1; }
+          test -f "$APP/Info.plist" || { echo '::error::brak Info.plist'; exit 1; }
+          grep -q 'Pentatonika' "$APP/index.html" || { echo '::error::index.html w pakiecie nie wygląda na tę aplikację'; exit 1; }
+          echo "index.html w pakiecie: $(wc -c < "$APP/index.html") bajtów"
+          echo "APP_PATH=$APP" >> "$GITHUB_ENV"
+
+      - name: Spakuj IPA
+        run: |
+          set -e
+          rm -rf Payload
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          zip -qry BartekJones-unsigned.ipa Payload
+          ls -la BartekJones-unsigned.ipa
+
+      - name: Artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: BartekJones-unsigned-ipa
+          path: BartekJones-unsigned.ipa
+          if-no-files-found: error
+
+      - name: Publikacja w Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ios
+          name: Bartek Jones — instalka iOS (IPA bez podpisu)
+          body: |
+            IPA **bez podpisu**. iOS nie pozwala zainstalować takiego pliku bezpośrednio —
+            trzeba go podpisać swoim Apple ID przy instalacji:
+
+            - **Sideloadly** albo **AltStore** (Windows/macOS) — wystarczy darmowe Apple ID,
+              aplikacja działa wtedy 7 dni i trzeba ją odświeżać;
+            - konto **Apple Developer** (99 USD/rok) — podpis ważny rok.
+
+            Minimalny system: iOS 17. Działa na iOS 27 i iPhone 14.
+          files: BartekJones-unsigned.ipa
