@@ -21,9 +21,13 @@ działa jak natywna: własna ikona, pełny ekran, offline, **działający mikrof
 2. **Settings → General → Danger Zone → Change visibility → Public.**
    W darmowym planie GitHub Pages działa tylko dla publicznych repozytoriów.
    (Workflow `pages.yml` celowo pomija wdrożenie, dopóki repo jest prywatne.)
-3. To wszystko. Workflow sam włączy Pages i wgra stronę przy najbliższym
-   pushu — albo od razu: **Actions → „Publikuj PWA (GitHub Pages)” → Run workflow**.
-4. Po ~1 minucie aplikacja jest pod adresem:
+3. **Settings → Pages → Build and deployment → Source: „GitHub Actions”.**
+   Jednorazowo. Workflow nie jest w stanie zrobić tego sam — jego token może
+   wdrażać na już włączone Pages, ale nie ma prawa ich włączyć
+   (sprawdzone: `Resource not accessible by integration`).
+4. **Actions → „Publikuj PWA (GitHub Pages)” → Run workflow** — albo po prostu
+   dowolny push do `main`.
+5. Po ~1 minucie aplikacja jest pod adresem:
 
    `https://krzysztofwolniarczyk-source.github.io/DJEMBE/`
 
