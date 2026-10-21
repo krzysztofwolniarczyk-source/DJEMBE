@@ -3,9 +3,14 @@
 Nauka gry na gitarze od poziomu zerowego do wirtuoza. Aplikacja na iOS.
 Inspirowana układem i stylem RYTMIKA·TRIP.
 
-Całość to jeden plik `index.html` opakowany w natywny `WKWebView`.
-Zero sieci, zero zewnętrznych fontów, zero sampli — wszystkie dźwięki
-są syntezowane na żywo, więc aplikacja działa w całości offline.
+Całość to jeden plik `index.html`, dostępny na dwa sposoby:
+
+- **PWA** — z GitHub Pages, instalowana z Safari na ekran początkowy.
+  Trwała, darmowa, bez konta Apple. **Zobacz `INSTRUKCJA.md`.**
+- **natywna powłoka iOS** (`WKWebView`) — IPA bez podpisu z CI.
+
+Zero sieci w trakcie działania, zero zewnętrznych fontów, zero sampli —
+wszystkie dźwięki są syntezowane na żywo, więc aplikacja działa w całości offline.
 
 ## Co jest w środku
 
@@ -53,6 +58,17 @@ swoim Apple ID w momencie instalacji:
 Minimalny system to **iOS 17**, czyli aplikacja działa na iOS 27
 i na iPhonie 14. Niższy próg niż 27 celowo — ta sama paczka uruchomi się
 też na starszych telefonach, a nic w aplikacji nie wymaga nowego SDK.
+
+## Mikrofon w powłoce natywnej
+
+WebKit wymaga do `getUserMedia` bezpiecznego kontekstu, a `file://` nim nie
+jest. Dlatego powłoka iOS uruchamia **minimalny serwer HTTP na pętli zwrotnej**
+(`ios/Sources/LocalServer.swift`, `Network.framework`, zero zależności) i
+ładuje stronę z `http://127.0.0.1:28417`. Serwer podaje wyłącznie pliki
+z bundle'a, tylko GET/HEAD, i nasłuchuje tylko na 127.0.0.1 — nic nie wystaje
+na Wi-Fi. Port jest stały, bo `localStorage` jest kluczowany po originie;
+losowy port kasowałby postępy przy każdym uruchomieniu. Gdyby port był zajęty,
+powłoka wraca do `file://` — działa wtedy wszystko poza stroikiem.
 
 ## Uprawnienia
 

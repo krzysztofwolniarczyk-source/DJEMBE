@@ -1,0 +1,49 @@
+name: Publikuj PWA (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # W darmowym planie Pages działa tylko dla publicznych repozytoriów —
+    # przy prywatnym ten job jest pomijany zamiast świecić na czerwono.
+    # Masz GitHub Pro? Usuń ten warunek.
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Złóż stronę
+        # Na Pages idą tylko pliki aplikacji webowej — bez źródeł iOS i workflowów.
+        run: |
+          set -e
+          mkdir -p site/icons
+          cp index.html manifest.webmanifest sw.js site/
+          cp icons/*.png site/icons/
+          ls -laR site
+
+      - uses: actions/configure-pages@v5
+        with:
+          # Sam włącza Pages ze źródłem „GitHub Actions” — bez klikania w Settings.
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

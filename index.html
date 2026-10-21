@@ -5,7 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bartek Jones">
 <meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0908">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <title>Bartek guitarist master level maderfucker Jones</title>
 <style>
   :root{
@@ -1293,6 +1298,11 @@
   renderEarModes(); renderEarOpts();
   document.addEventListener('visibilitychange',function(){ if(document.hidden) stopAll(); });
 })();
+</script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('./sw.js').catch(function(){});
+  }
 </script>
 </body>
 </html>

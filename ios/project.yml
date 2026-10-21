@@ -47,3 +47,7 @@ targets:
         UIUserInterfaceStyle: Dark
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        # Strona jest podawana z http://127.0.0.1 (LocalServer) — ATS musi
+        # przepuścić zwykły HTTP na pętli zwrotnej.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
